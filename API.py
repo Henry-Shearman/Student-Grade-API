@@ -116,11 +116,14 @@ def upsert_users():
 
     if data is None:
 
-        data = request.form    
+        data = request.form
+        data_entries = [data]
 
-    data_entries = data["new_student_grades"]
+    else:
 
-    #Format data into SQL values tuple string
+        data_entries = data["new_student_grades"]
+
+    #Format data into SQL values tuple string for batch processing
     sql_values = ",".join([f"{tuple(entry.values())}" for entry in data_entries])
 
 
