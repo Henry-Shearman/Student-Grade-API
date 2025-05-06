@@ -27,7 +27,7 @@ def get_all_grades_test():
                   WHERE Name LIKE '{query_name}'
                     AND CourseName LIKE '{query_course}';"""  
 
-    conn = psycopg2.connect(host="localhost"
+    conn = psycopg2.connect(host=os.getenv('DB_HOSTNAME')
                            ,database=os.getenv('DB_NAME')
                            ,user=os.getenv('DB_USERNAME')
                            ,password=os.getenv('DB_PASSWORD'))
@@ -62,7 +62,7 @@ def get_summary_statistics():
                   WHERE Name LIKE '{query_name}'
                     AND CourseName LIKE '{query_course}';"""
 
-    conn = psycopg2.connect(host="localhost"
+    conn = psycopg2.connect(host=os.getenv('DB_HOSTNAME')
                            ,database=os.getenv('DB_NAME')
                            ,user=os.getenv('DB_USERNAME')
                            ,password=os.getenv('DB_PASSWORD'))
@@ -88,7 +88,7 @@ def curve_grades_with_flat_scale():
 
     query = "SELECT Grade FROM Class.FactGrades;"
 
-    conn = psycopg2.connect(host="localhost"
+    conn = psycopg2.connect(host=os.getenv('DB_HOSTNAME')
                            ,database=os.getenv('DB_NAME')
                            ,user=os.getenv('DB_USERNAME')
                            ,password=os.getenv('DB_PASSWORD'))
@@ -129,7 +129,7 @@ def upsert_users():
 
     query = f"""INSERT INTO Class.StudentDataLanding VALUES {sql_values};"""
 
-    conn = psycopg2.connect(host="localhost"
+    conn = psycopg2.connect(host=os.getenv('DB_HOSTNAME')
                            ,database=os.getenv('DB_NAME')
                            ,user=os.getenv('DB_USERNAME')
                            ,password=os.getenv('DB_PASSWORD'))
