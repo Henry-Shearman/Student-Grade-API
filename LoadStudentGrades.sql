@@ -10,7 +10,8 @@ CREATE TABLE Class.StudentDataLanding(StudentNo INT
 	                             ,Name VARCHAR(50)                                                           
 				     ,Gender VARCHAR(10)
                                      ,CourseName VARCHAR(50)
-				     ,Grade SMALLINT);
+				     ,Grade SMALLINT
+			             ,CreatedDate TIMESTAMP DEFAULT current_timestamp);
 
 CREATE TABLE Class.DimStudent(StudentKey INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
 	                  ,StudentNo INT UNIQUE NOT NULL
@@ -21,14 +22,13 @@ CREATE TABLE Class.DimCourse(CourseKey INT GENERATED ALWAYS AS IDENTITY PRIMARY 
                          ,CourseName VARCHAR(50) UNIQUE NOT NULL);
 	
 CREATE TABLE Class.FactGrades(GradeKey INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
-                         ,StudentNo SMALLINT REFERENCES 
-			  Class.DimStudent(StudentNo) ON UPDATE CASCADE 
-			                            ON DELETE CASCADE
-			 ,CourseKey SMALLINT REFERENCES 
-			  Class.DimCourse(CourseKey) ON UPDATE CASCADE 
-			                          ON DELETE CASCADE
+                         ,StudentNo SMALLINT REFERENCES Class.DimStudent(StudentNo) ON UPDATE CASCADE 
+			                                                            ON DELETE CASCADE
+			 ,CourseKey SMALLINT REFERENCES Class.DimCourse(CourseKey) ON UPDATE CASCADE 
+			                                                           ON DELETE CASCADE
 			 ,Grade SMALLINT
-		         ,AcademicGrade VARCHAR(2));
+		         ,AcademicGrade VARCHAR(2)
+		         ,UpdatedDate TIMESTAMP);
 
 
 ----Create triggers and trigger functions----
@@ -55,7 +55,8 @@ CREATE OR REPLACE FUNCTION Class.update_student_data() RETURNS TRIGGER AS
 	MERGE INTO Class.FactGrades g
         USING (SELECT s.StudentNo
 		     ,c.CourseKey
-		     ,lnd.Grade 
+		     ,lnd.Grade
+	             ,lnd.CreatedDate	
 	           FROM Class.StudentDataLanding lnd
 	           JOIN Class.DimStudent s ON lnd.StudentNo = s.StudentNo
 	           JOIN Class.DimCourse c ON lnd.CourseName = c.CourseName) AS g_keys ON g.StudentNo = g_keys.StudentNo
@@ -63,13 +64,17 @@ CREATE OR REPLACE FUNCTION Class.update_student_data() RETURNS TRIGGER AS
 	WHEN MATCHED THEN        
             UPDATE SET Grade = g_keys.Grade
         WHEN NOT MATCHED THEN
-	    INSERT (StudentNo, CourseKey, Grade, AcademicGrade) 
-	    VALUES (g_keys.StudentNo, g_keys.CourseKey, g_keys.Grade, CASE WHEN Grade >= 85 THEN 'HD'
-                                                                           WHEN Grade >= 75 THEN 'D'
-                                                                           WHEN Grade >= 65 THEN 'C'
-                                                                           WHEN Grade >= 50 THEN 'P'
-                                                                           ELSE 'FF'
-                                                                       END);
+	    INSERT (StudentNo, CourseKey, Grade, AcademicGrade, UpdatedDate) 
+	    VALUES (g_keys.StudentNo
+		   ,g_keys.CourseKey
+		   ,g_keys.Grade
+		   ,CASE WHEN Grade >= 85 THEN 'HD'
+                         WHEN Grade >= 75 THEN 'D'
+                         WHEN Grade >= 65 THEN 'C'
+                         WHEN Grade >= 50 THEN 'P'
+                         ELSE 'FF'
+                    END
+	           ,g_keys.CreatedDate);
 
       DELETE FROM Class.StudentDataLanding;
       RETURN NULL;
@@ -94,6 +99,8 @@ CREATE OR REPLACE FUNCTION Class.update_academic_grades() RETURNS TRIGGER AS
                                     WHEN NEW.Grade >= 50 THEN 'P'
                                     ELSE 'FF'
 			       END
+	      ,UpdatedDate = current_timestamp
+
 	   WHERE GradeKey = NEW.GradeKey;
 	
        RETURN NEW;
@@ -117,4 +124,5 @@ COPY Class.StudentDataLanding
     CSV HEADER;
 
 
- 
+---Test Data---
+SELECT * FROM Class.FactGrades;

@@ -1,4 +1,5 @@
 import pandas as pd
+from datetime import datetime
 from random import choice, randint
 from itertools import product
 from names import get_full_name
@@ -13,9 +14,16 @@ course_choice = ['English', 'Mathematics', 'History', 'Geography','Science', 'PD
 student_courses = product(student_tuples, course_choice)
 
 #Generate random grade data and unzip into list
-grades = list(zip(*[(student, course, randint(30, 90)) for student, course in student_courses]))
+grades = list(zip(*[(student, course, randint(30, 90), datetime.now()) for student, course in student_courses]))
 grades = list(zip(*grades[0])) + grades[1:]
 
 #Format data into dataframe columns and export to csv
-df = pd.DataFrame({'StudentNo':grades[0], 'Name':grades[1], 'Gender':grades[2], 'CourseName':grades[3], 'Grade':grades[4]})
+df = pd.DataFrame({'StudentNo':grades[0]
+                  ,'Name':grades[1]
+                  ,'Gender':grades[2]
+                  ,'CourseName':grades[3]
+                  ,'Grade':grades[4]
+                  ,'CreatedDate':grades[5]})
+
+#Export to csv
 df.to_csv('StudentDummyData.csv', index=False)
