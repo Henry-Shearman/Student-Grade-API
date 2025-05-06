@@ -70,6 +70,7 @@ def get_summary_statistics():
     cursor = conn.cursor()
     cursor.execute(query)
     grade_list = cursor.fetchall()
+    
     conn.commit()
     conn.close()
 
@@ -105,6 +106,32 @@ def curve_grades_with_flat_scale():
     conn.close()
 
     return jsonify({"message":"grades updated successfully", "number_of_updated_grades":len(grade_list)})
+
+
+#Upserts user data from json in request body
+@app.post('/insert_student_data')
+def upsert_users():
+
+    data = request.json
+
+    query = f"""INSERT INTO Class.StudentDataLanding VALUES ({data['student_number']}
+                                                            ,'{data['student_name']}'
+                                                            ,'{data['student_gender']}'
+                                                            ,'{data['student_course_name']}'
+                                                            ,{data['student_grade']});"""
+
+    conn = psycopg2.connect(host="localhost"
+                           ,database=os.getenv('DB_NAME')
+                           ,user=os.getenv('DB_USERNAME')
+                           ,password=os.getenv('DB_PASSWORD'))
+
+    cursor = conn.cursor()
+    cursor.execute(query)
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({"message":"user inserted successfully"})
 
 
 def main():
