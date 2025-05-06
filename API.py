@@ -104,7 +104,7 @@ def curve_grades_with_flat_scale():
     conn.commit()
     conn.close()
 
-    return jsonify({})
+    return jsonify({"message":"grades updated successfully", "number_of_updated_grades":len(grade_list)})
 
 
 def main():
