@@ -117,10 +117,4 @@ COPY Class.StudentDataLanding
     CSV HEADER;
 
 
-
-----Test Data For Insert----
-INSERT INTO Class.StudentDataLanding VALUES(10005, 'Elly', 'female', 'Sex Education', 76);	
-SELECT * FROM Class.FactGrades;
-INSERT INTO Class.StudentDataLanding VALUES(10005, 'Elly', 'female', 'Sex Education', 90);
-SELECT * FROM Class.FactGrades;
  
