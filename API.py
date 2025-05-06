@@ -111,8 +111,12 @@ def curve_grades_with_flat_scale():
 #Upserts user data from json in request body
 @app.post('/insert_student_data')
 def upsert_users():
+ 
+    data = request.get_json(silent=True)
 
-    data = request.json
+    if data is None:
+
+        data = request.form
 
     query = f"""INSERT INTO Class.StudentDataLanding VALUES ({data['student_number']}
                                                             ,'{data['student_name']}'
