@@ -52,18 +52,23 @@ CREATE OR REPLACE FUNCTION Class.update_student_data() RETURNS TRIGGER AS
 	    INSERT (CourseName)
 	    VALUES (lnd.CourseName);
 
+	WITH cte_grade_keys AS (SELECT s.StudentNo
+                     		      ,c.CourseKey
+                                      ,lnd.Grade
+                                      ,lnd.CreatedDate
+				      ,ROW_NUMBER() OVER(PARTITION BY s.StudentNo
+					                             ,c.CourseKey 
+							     ORDER BY CreatedDate DESC) AS RowNumber
+				    FROM Class.StudentDataLanding lnd		
+                                    JOIN Class.DimStudent s ON lnd.StudentNo = s.StudentNo
+                                    JOIN Class.DimCourse c ON lnd.CourseName = c.CourseName)
+
 	MERGE INTO Class.FactGrades g
-        USING (SELECT s.StudentNo
-		     ,c.CourseKey
-		     ,lnd.Grade
-	             ,lnd.CreatedDate	
-	           FROM Class.StudentDataLanding lnd
-	           JOIN Class.DimStudent s ON lnd.StudentNo = s.StudentNo
-	           JOIN Class.DimCourse c ON lnd.CourseName = c.CourseName) AS g_keys ON g.StudentNo = g_keys.StudentNo
-	                                                                          AND g.CourseKey = g_keys.CourseKey
-	WHEN MATCHED THEN        
+        USING cte_grade_keys AS g_keys ON g.StudentNo = g_keys.StudentNo
+	                              AND g.CourseKey = g_keys.CourseKey
+	WHEN MATCHED AND RowNumber = 1 THEN        
             UPDATE SET Grade = g_keys.Grade
-        WHEN NOT MATCHED THEN
+        WHEN NOT MATCHED AND RowNumber = 1 THEN
 	    INSERT (StudentNo, CourseKey, Grade, AcademicGrade, UpdatedDate) 
 	    VALUES (g_keys.StudentNo
 		   ,g_keys.CourseKey
@@ -122,7 +127,3 @@ COPY Class.StudentDataLanding
     FROM '/tmp/StudentDummyData.csv'
     DELIMITER ','
     CSV HEADER;
-
-
----Test Data---
-SELECT * FROM Class.FactGrades;
