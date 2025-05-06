@@ -1,10 +1,11 @@
+----Drop any existing tables----
 DROP TABLE IF EXISTS Class.StudentDataLanding;
 DROP TABLE IF EXISTS Class.FactGrades;
 DROP TABLE IF EXISTS Class.DimStudents;
 DROP TABLE IF EXISTS Class.DimCourse;
 
 
-
+----Create tables for "Class" schema
 CREATE TABLE Class.StudentDataLanding(StudentNo INT
 	                             ,Name VARCHAR(50)                                                           
 				     ,Gender VARCHAR(10)
@@ -30,7 +31,7 @@ CREATE TABLE Class.FactGrades(GradeKey INT GENERATED ALWAYS AS IDENTITY PRIMARY 
 		         ,AcademicGrade VARCHAR(2));
 
 
-
+----Create triggers and trigger functions----
 CREATE OR REPLACE FUNCTION Class.update_student_data() RETURNS TRIGGER AS
     $$
     BEGIN
@@ -109,7 +110,7 @@ CREATE OR REPLACE TRIGGER academic_grade_update
     
 
 
---Populate tables with dummy data--
+----Populate tables with dummy data----
 COPY Class.StudentDataLanding 
     FROM '/tmp/StudentDummyData.csv'
     DELIMITER ','
