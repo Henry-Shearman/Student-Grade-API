@@ -116,13 +116,15 @@ def upsert_users():
 
     if data is None:
 
-        data = request.form
+        data = request.form    
 
-    query = f"""INSERT INTO Class.StudentDataLanding VALUES ({data['student_number']}
-                                                            ,'{data['student_name']}'
-                                                            ,'{data['student_gender']}'
-                                                            ,'{data['student_course_name']}'
-                                                            ,{data['student_grade']});"""
+    data_entries = data["new_student_grades"]
+
+    #Format data into SQL values tuple string
+    sql_values = ",".join([f"{tuple(entry.values())}" for entry in data_entries])
+
+
+    query = f"""INSERT INTO Class.StudentDataLanding VALUES {sql_values};"""
 
     conn = psycopg2.connect(host="localhost"
                            ,database=os.getenv('DB_NAME')
@@ -135,7 +137,7 @@ def upsert_users():
     conn.commit()
     conn.close()
 
-    return jsonify({"message":"user inserted successfully"})
+    return jsonify({"message":"users updated successfully", "number_of_updated_users":len(data_entries)})
 
 
 def main():
@@ -146,4 +148,3 @@ def main():
 if __name__ == '__main__':
 
     main()
-
