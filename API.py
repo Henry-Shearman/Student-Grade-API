@@ -8,7 +8,18 @@ from flask import Flask, jsonify, request
 app = Flask(__name__)
 
 
-# API call to return grade data with options to filter by name or course. NB: will not work with any null entries.
+#Returns a database connection instance from environment variables
+def get_database_connection():
+
+    conn_instance = psycopg2.connect(host=os.getenv('DB_HOSTNAME')
+                                    ,database=os.getenv('DB_NAME')
+                                    ,user=os.getenv('DB_USERNAME')
+                                    ,password=os.getenv('DB_PASSWORD'))
+
+    return conn_instance
+
+
+#API call to return grade data with options to filter by name or course. NB: will not work with any null entries.
 @app.get('/grades_search')
 def get_all_grades_test():
     
@@ -27,14 +38,11 @@ def get_all_grades_test():
                   WHERE Name LIKE '{query_name}'
                     AND CourseName LIKE '{query_course}';"""  
 
-    conn = psycopg2.connect(host=os.getenv('DB_HOSTNAME')
-                           ,database=os.getenv('DB_NAME')
-                           ,user=os.getenv('DB_USERNAME')
-                           ,password=os.getenv('DB_PASSWORD'))
-
+    conn = get_database_connection()
     cursor = conn.cursor()
     cursor.execute(query)
     course_grade_pair_list = cursor.fetchall()
+    
     conn.commit()
     conn.close()
 
@@ -62,11 +70,7 @@ def get_summary_statistics():
                   WHERE Name LIKE '{query_name}'
                     AND CourseName LIKE '{query_course}';"""
 
-    conn = psycopg2.connect(host=os.getenv('DB_HOSTNAME')
-                           ,database=os.getenv('DB_NAME')
-                           ,user=os.getenv('DB_USERNAME')
-                           ,password=os.getenv('DB_PASSWORD'))
-
+    conn = get_database_connection()
     cursor = conn.cursor()
     cursor.execute(query)
     grade_list = cursor.fetchall()
@@ -78,7 +82,6 @@ def get_summary_statistics():
     std_dv = round(np.std(grade_list, mean=mean) ,1)
     summary_stats_dict = {"summary_stats":{"mean":mean, "standard_deviation":std_dv}}
 
-
     return jsonify(summary_stats_dict)
 
 
@@ -88,11 +91,7 @@ def curve_grades_with_flat_scale():
 
     query = "SELECT Grade FROM Class.FactGrades;"
 
-    conn = psycopg2.connect(host=os.getenv('DB_HOSTNAME')
-                           ,database=os.getenv('DB_NAME')
-                           ,user=os.getenv('DB_USERNAME')
-                           ,password=os.getenv('DB_PASSWORD'))
-
+    conn = get_database_connection()
     cursor = conn.cursor()
     cursor.execute(query)
     grade_list = cursor.fetchall()
@@ -129,11 +128,7 @@ def upsert_users():
 
     query = f"""INSERT INTO Class.StudentDataLanding VALUES {sql_values};"""
 
-    conn = psycopg2.connect(host=os.getenv('DB_HOSTNAME')
-                           ,database=os.getenv('DB_NAME')
-                           ,user=os.getenv('DB_USERNAME')
-                           ,password=os.getenv('DB_PASSWORD'))
-
+    conn = get_database_connection()
     cursor = conn.cursor()
     cursor.execute(query)
 
