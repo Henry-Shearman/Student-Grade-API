@@ -24,9 +24,13 @@ def get_database_connection():
 def get_all_grades_test():
     
     query_name = request.args.get('name', default='%')
-    query_course = request.args.get('course', default='%')
+    query_name = f'{query_name}%'.lower() if query_name != '%' else '%'
 
-    query = f"""SELECT Name
+    query_course = request.args.get('course', default='%')
+    query_course = f'{query_course}%'.lower() if query_course != '%' else '%'
+
+    query = f"""SELECT s.StudentNo
+                      ,Name
                       ,CourseName
                       ,Grade
                       ,AcademicGrade
@@ -35,8 +39,8 @@ def get_all_grades_test():
                   JOIN Class.DimStudent s ON g.StudentNo = s.StudentNo
                   JOIN Class.DimCourse c ON g.CourseKey = c.CourseKey
 
-                  WHERE Name LIKE '{query_name}'
-                    AND CourseName LIKE '{query_course}';"""  
+                  WHERE LOWER(Name) LIKE '{query_name}'
+                    AND LOWER(CourseName) LIKE '{query_course}';"""  
 
     conn = get_database_connection()
     cursor = conn.cursor()
@@ -46,10 +50,11 @@ def get_all_grades_test():
     conn.commit()
     conn.close()
 
-    course_grade_pair_dict = {"search_results":list(map(lambda x: {"student_name":x[0]
-                                                                  ,"course_name":x[1]
-                                                                  ,"grade":x[2]
-                                                                  ,"academic_grade":x[3]}, course_grade_pair_list))}
+    course_grade_pair_dict = {"search_results":list(map(lambda x: {"student_number":x[0]
+                                                                  ,"student_name":x[1]
+                                                                  ,"course_name":x[2]
+                                                                  ,"grade":x[3]
+                                                                  ,"academic_grade":x[4]}, course_grade_pair_list))}
     
     return jsonify(course_grade_pair_dict)    
 
@@ -59,16 +64,19 @@ def get_all_grades_test():
 def get_summary_statistics():
 
     query_name = request.args.get('name', default='%')
-    query_course = request.args.get('course', default='%')
+    query_name = f'{query_name}%'.lower() if query_name != '%' else '%'
 
+    query_course = request.args.get('course', default='%')
+    query_course = f'{query_course}%'.lower() if query_course != '%' else '%'
+    
     query = f"""SELECT Grade
 
                   FROM Class.FactGrades g
                   JOIN Class.DimStudent s ON g.StudentNo = s.StudentNo
                   JOIN Class.DimCourse c ON g.CourseKey = c.CourseKey
 
-                  WHERE Name LIKE '{query_name}'
-                    AND CourseName LIKE '{query_course}';"""
+                  WHERE LOWER(Name) LIKE '{query_name}'
+                    AND LOWER(CourseName) LIKE '{query_course}';"""
 
     conn = get_database_connection()
     cursor = conn.cursor()

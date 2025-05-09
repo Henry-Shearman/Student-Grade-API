@@ -14,21 +14,28 @@ CREATE TABLE Class.StudentDataLanding(StudentNo INT
 			             ,CreatedDate TIMESTAMP DEFAULT current_timestamp);
 
 CREATE TABLE Class.DimStudent(StudentKey INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
-	                  ,StudentNo INT UNIQUE NOT NULL
-	                  ,Name VARCHAR(50)
-		          ,Gender VARCHAR(10));
+	                     ,StudentNo INT UNIQUE NOT NULL
+	                     ,Name VARCHAR(50)
+		             ,Gender VARCHAR(10));
 
 CREATE TABLE Class.DimCourse(CourseKey INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
-                         ,CourseName VARCHAR(50) UNIQUE NOT NULL);
+                            ,CourseName VARCHAR(50) UNIQUE NOT NULL);
 	
 CREATE TABLE Class.FactGrades(GradeKey INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
-                         ,StudentNo SMALLINT REFERENCES Class.DimStudent(StudentNo) ON UPDATE CASCADE 
-			                                                            ON DELETE CASCADE
-			 ,CourseKey SMALLINT REFERENCES Class.DimCourse(CourseKey) ON UPDATE CASCADE 
-			                                                           ON DELETE CASCADE
-			 ,Grade SMALLINT
-		         ,AcademicGrade VARCHAR(2)
-		         ,UpdatedDate TIMESTAMP);
+                             ,StudentNo SMALLINT REFERENCES Class.DimStudent(StudentNo) ON UPDATE CASCADE 
+			                                                                ON DELETE CASCADE
+			     ,CourseKey SMALLINT REFERENCES Class.DimCourse(CourseKey) ON UPDATE CASCADE 
+			                                                               ON DELETE CASCADE
+			     ,Grade SMALLINT
+		             ,AcademicGrade VARCHAR(2)
+		             ,UpdatedDate TIMESTAMP);
+
+
+----Create indexes---------------------------
+CREATE INDEX idx_name ON Class.DimStudent(LOWER(Name)); --index for case-insensitive API search queries
+CREATE INDEX idx_course_name ON Class.DimCourse(LOWER(CourseName)); --index for case-insensitive API search queries
+CREATE INDEX idx_grades_std_no ON Class.FactGrades(StudentNo); --index for foreign key
+CREATE INDEX idx_grades_course_key ON Class.FactGrades(CourseKey); --index for foreign key
 
 
 ----Create triggers and trigger functions----
