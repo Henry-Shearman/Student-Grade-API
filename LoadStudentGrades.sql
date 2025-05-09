@@ -32,8 +32,8 @@ CREATE TABLE Class.FactGrades(GradeKey INT GENERATED ALWAYS AS IDENTITY PRIMARY 
 
 
 ----Create indexes---------------------------
-CREATE INDEX idx_name ON Class.DimStudent(LOWER(Name)); --index for case-insensitive API search queries
-CREATE INDEX idx_course_name ON Class.DimCourse(LOWER(CourseName)); --index for case-insensitive API search queries
+CREATE INDEX idx_name ON Class.DimStudent(LOWER(Name) varchar_pattern_ops); --index for case-insensitive API search queries
+CREATE INDEX idx_course_name ON Class.DimCourse(LOWER(CourseName) varchar_pattern_ops); --index for case-insensitive API search queries
 CREATE INDEX idx_grades_std_no ON Class.FactGrades(StudentNo); --index for foreign key
 CREATE INDEX idx_grades_course_key ON Class.FactGrades(CourseKey); --index for foreign key
 
