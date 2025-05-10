@@ -1,11 +1,69 @@
 # API ENDPOINTS<br />
 ## GET /grades\_search
 ### Description: returns student grade data filtered by name and course.<br /><br />
+### Example Call
+```sh
+curl -X GET "http://${SERVER_NAME}:${PORT}/grades_search?name=Susan&course=math"
+```
+#### Output
+```
+{
+  "search_results": [
+    {
+      "academic_grade": "C",
+      "course_name": "Mathematics",
+      "grade": 68,
+      "student_name": "Susan Frese",
+      "student_number": 10012
+    }
+  ]
+}
+```
+
 
 ## GET /summary\_stats
 ### Description: returns grade summary statistics filtered by name and course.<br /><br />
+### Example Call
+```sh
+curl -X GET "http://${SERVER_NAME}:${PORT}/summary_stats?course=Mathematics"
+```
+#### Output
+```
+{
+  "summary_stats": {
+    "mean": 61.2,
+    "standard_deviation": 16.3
+  }
+}
+```
+
+
+
 ## PUT /flat\_scale\_curve
 ### Description: scales grades using a flat scale curve.<br /><br />
+### Example Call
+```sh
+curl -X PUT "http://${SERVER_NAME}:${PORT}/flat_scale_curve"
+```
+#### Output
+```
+{
+  "message": "grades updated successfully",
+  "number_of_updated_grades": 91
+}
+```
+
 
 ## POST /insert\_student\_data
 ### Description: upserts student data
+### Example Call
+```sh
+curl -X POST "http://${SERVER_NAME}:${PORT}//insert_student_data?" -H "Content-Type: application/json" -d '{"new_student_grades":[{"student_number":20000, "student_name":"Henry Shearman", "student_gender":"male", "student_course":"Music", "student_grade":20}, {"student_number":20000, "student_name":"Henry Shearman", "student_gender":"male", "student_course":"Computer Science", "student_grade":88}]}'
+```
+#### Output
+```
+{
+  "message": "users updated successfully",
+  "number_of_updated_users": 2
+}
+```
