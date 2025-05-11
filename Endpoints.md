@@ -45,8 +45,13 @@ curl -X GET "http://${SERVER_NAME}:${PORT}/summary_stats?course=Mathematics"
 ```
 {
   "summary_stats": {
-    "mean": 61.2,
-    "standard_deviation": 16.3
+    "N_courses": 1,
+    "N_grades": 13,
+    "N_students": 13,
+    "grade_standard_deviation": 16.3,
+    "max_grade": 100,
+    "mean_grade": 71.2,
+    "min_grade": 41
   }
 }
 ```

@@ -45,9 +45,7 @@ def get_all_grades_test():
     conn = get_database_connection()
     cursor = conn.cursor()
     cursor.execute(query)
-    course_grade_pair_list = cursor.fetchall()
-    
-    conn.commit()
+    course_grade_pair_list = cursor.fetchall() 
     conn.close()
 
     course_grade_pair_dict = {"search_results":list(map(lambda x: {"student_number":x[0]
@@ -69,7 +67,9 @@ def get_summary_statistics():
     query_course = request.args.get('course', default='%')
     query_course = f'{query_course}%'.lower() if query_course != '%' else '%'
     
-    query = f"""SELECT Grade
+    query = f"""SELECT g.CourseKey
+                      ,g.StudentNo  
+                      ,Grade
 
                   FROM Class.FactGrades g
                   JOIN Class.DimStudent s ON g.StudentNo = s.StudentNo
@@ -81,14 +81,23 @@ def get_summary_statistics():
     conn = get_database_connection()
     cursor = conn.cursor()
     cursor.execute(query)
-    grade_list = cursor.fetchall()
-    
-    conn.commit()
+    results_list = list(zip(*cursor.fetchall())) 
     conn.close()
-
+    
+    #Summary Statistics
+    no_of_courses = len(set(results_list[0]))
+    no_of_students = len(set(results_list[1]))
+    grade_list = results_list[2]
+    no_of_grades = len(grade_list)
     mean = round(np.mean(grade_list), 1)
     std_dv = round(np.std(grade_list, mean=mean) ,1)
-    summary_stats_dict = {"summary_stats":{"mean":mean, "standard_deviation":std_dv}}
+    summary_stats_dict = {"summary_stats":{"N_courses":no_of_courses
+                                          ,"N_students":no_of_students
+                                          ,"N_grades":no_of_grades
+                                          ,"min_grade":int(np.min(grade_list))
+                                          ,"max_grade":int(np.max(grade_list))
+                                          ,"mean_grade":mean
+                                          ,"grade_standard_deviation":std_dv}}
 
     return jsonify(summary_stats_dict)
 
@@ -105,10 +114,8 @@ def curve_grades_with_flat_scale():
     grade_list = cursor.fetchall()
     max_grade = np.max(grade_list)
     grade_adjust_value = 100 - max_grade
-
     update_string = f"UPDATE Class.FactGrades SET Grade = Grade + {grade_adjust_value};"
     cursor.execute(update_string)
-
     conn.commit()
     conn.close()
 
@@ -133,13 +140,11 @@ def upsert_users():
     #Format data into SQL values tuple string for batch processing
     sql_values = ",".join([f"{tuple(entry.values())}" for entry in data_entries])
 
-
     query = f"""INSERT INTO Class.StudentDataLanding VALUES {sql_values};"""
 
     conn = get_database_connection()
     cursor = conn.cursor()
     cursor.execute(query)
-
     conn.commit()
     conn.close()
 
