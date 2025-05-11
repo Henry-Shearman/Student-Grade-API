@@ -1,6 +1,13 @@
 # API ENDPOINTS<br />
 ## GET /grades\_search
-### Description: returns student grade data filtered by name and course.<br /><br />
+### Description: returns student grade data filtered by name and course.
+### Parameters
+
+|Parameter|Type  |Required|Description                    |
+|:--------|:-----|:-------|:------------------------------|
+|Name     |String|No      |Filters results by student name|
+|Course   |String|No      |Filters results by course name |
+
 ### Example Call
 ```sh
 curl -X GET "http://${SERVER_NAME}:${PORT}/grades_search?name=Susan&course=math"
@@ -22,7 +29,14 @@ curl -X GET "http://${SERVER_NAME}:${PORT}/grades_search?name=Susan&course=math"
 
 
 ## GET /summary\_stats
-### Description: returns grade summary statistics filtered by name and course.<br /><br />
+### Description: returns grade summary statistics filtered by name and course.
+### Parameters
+
+|Parameter|Type  |Required|Description                    |
+|:--------|:-----|:-------|:------------------------------|
+|Name     |String|No      |Filters results by student name|
+|Course   |String|No      |Filters results by course name |
+
 ### Example Call
 ```sh
 curl -X GET "http://${SERVER_NAME}:${PORT}/summary_stats?course=Mathematics"
@@ -40,7 +54,9 @@ curl -X GET "http://${SERVER_NAME}:${PORT}/summary_stats?course=Mathematics"
 
 
 ## PUT /flat\_scale\_curve
-### Description: scales grades using a flat scale curve.<br /><br />
+### Description: scales grades using a flat scale curve.
+### Parameters
+None
 ### Example Call
 ```sh
 curl -X PUT "http://${SERVER_NAME}:${PORT}/flat_scale_curve"
@@ -56,9 +72,11 @@ curl -X PUT "http://${SERVER_NAME}:${PORT}/flat_scale_curve"
 
 ## POST /insert\_student\_data
 ### Description: upserts student data
+### Parameters
+None
 ### Example Call
 ```sh
-curl -X POST "http://${SERVER_NAME}:${PORT}//insert_student_data?" -H "Content-Type: application/json" -d '{"new_student_grades":[{"student_number":20000, "student_name":"Henry Shearman", "student_gender":"male", "student_course":"Music", "student_grade":20}, {"student_number":20000, "student_name":"Henry Shearman", "student_gender":"male", "student_course":"Computer Science", "student_grade":88}]}'
+curl -X POST "http://${SERVER_NAME}:${PORT}/insert_student_data" -H "Content-Type: application/json" -d '{"new_student_grades":[{"student_number":20000, "student_name":"Henry Shearman", "student_gender":"male", "student_course":"Music", "student_grade":20}, {"student_number":20000, "student_name":"Henry Shearman", "student_gender":"male", "student_course":"Computer Science", "student_grade":88}]}'
 ```
 #### Output
 ```
