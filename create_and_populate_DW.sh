@@ -7,8 +7,7 @@ db_password=$DB_PASSWORD #Assign password for user in application database from 
 
 #Create dummy student grade data
 python3 create_dummy_data.py
-mv StudentDummyData.csv /tmp
-sudo chmod 444 /tmp/StudentDummyData.csv
+sudo chmod 444 StudentDummyData.csv
 
 
 #Create database and user provisions
@@ -26,6 +25,7 @@ echo "All privileges granted for user ${db_username} on ${db_name} database"
 
 
 #Create and load data warehouse from SQL script
-psql -U $db_username -d $db_name -f "LoadStudentGrades.sql"
+psql -U $db_username -d $db_name -f "CreateStudentGradesDW.sql"
+psql -U $db_username -d $db_name -c "\\copy Class.StudentDataLanding FROM 'StudentDummyData.csv' WITH DELIMITER ',' CSV HEADER;"
 
-rm -f /tmp/StudentDummyData.csv
+rm -f StudentDummyData.csv

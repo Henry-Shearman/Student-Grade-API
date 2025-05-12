@@ -1,11 +1,11 @@
-----Drop any existing tables----
+----Drop any existing tables------------------
 DROP TABLE IF EXISTS Class.StudentDataLanding;
 DROP TABLE IF EXISTS Class.FactGrades;
 DROP TABLE IF EXISTS Class.DimStudents;
 DROP TABLE IF EXISTS Class.DimCourse;
 
 
-----Create tables for "Class" schema
+----Create tables for "Class" schema------------
 CREATE TABLE Class.StudentDataLanding(StudentNo INT
 	                             ,Name VARCHAR(50)                                                           
 				     ,Gender VARCHAR(10)
@@ -126,11 +126,3 @@ CREATE OR REPLACE TRIGGER academic_grade_update
     FOR EACH ROW
     WHEN (OLD.Grade != NEW.Grade)	
     EXECUTE FUNCTION Class.update_academic_grades();	
-    
-
-
-----Populate tables with dummy data----
-COPY Class.StudentDataLanding 
-    FROM '/tmp/StudentDummyData.csv'
-    DELIMITER ','
-    CSV HEADER;
