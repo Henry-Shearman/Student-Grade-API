@@ -16,7 +16,9 @@ CREATE TABLE Class.StudentDataLanding(StudentNo INT
 CREATE TABLE Class.DimStudent(StudentKey INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
 	                     ,StudentNo INT UNIQUE NOT NULL
 	                     ,Name VARCHAR(50)
-		             ,Gender VARCHAR(10));
+			     ,FirstName VARCHAR(50) GENERATED ALWAYS AS (SUBSTRING(Name FOR POSITION(' ' IN NAME) - 1)) STORED
+		             ,Surname VARCHAR(50) GENERATED ALWAYS AS (SUBSTRING(Name FROM POSITION(' ' IN NAME) + 1)) STORED
+			     ,Gender VARCHAR(10));
 
 CREATE TABLE Class.DimCourse(CourseKey INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
                             ,CourseName VARCHAR(50) UNIQUE NOT NULL);
@@ -33,6 +35,8 @@ CREATE TABLE Class.FactGrades(GradeKey INT GENERATED ALWAYS AS IDENTITY PRIMARY 
 
 ----Create indexes---------------------------
 CREATE INDEX idx_name ON Class.DimStudent(LOWER(Name) varchar_pattern_ops); --index for case-insensitive API search queries
+CREATE INDEX idx_f_name ON Class.DimStudent(LOWER(FirstName) varchar_pattern_ops); --index for case-insensitive API search queries
+CREATE INDEX idx_s_name ON Class.DimStudent(LOWER(Surname) varchar_pattern_ops); --index for case-insensitive API search queries
 CREATE INDEX idx_course_name ON Class.DimCourse(LOWER(CourseName) varchar_pattern_ops); --index for case-insensitive API search queries
 CREATE INDEX idx_grades_std_no ON Class.FactGrades(StudentNo); --index for foreign key
 CREATE INDEX idx_grades_course_key ON Class.FactGrades(CourseKey); --index for foreign key

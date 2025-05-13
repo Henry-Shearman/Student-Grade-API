@@ -39,7 +39,9 @@ def get_all_grades_test():
                   JOIN Class.DimStudent s ON g.StudentNo = s.StudentNo
                   JOIN Class.DimCourse c ON g.CourseKey = c.CourseKey
 
-                  WHERE LOWER(Name) LIKE '{query_name}'
+                  WHERE (LOWER(FirstName) LIKE '{query_name}'
+                        OR LOWER(Surname) LIKE '{query_name}'
+                        OR LOWER(Name) LIKE '{query_name}')
                     AND LOWER(CourseName) LIKE '{query_course}';"""  
 
     conn = get_database_connection()
@@ -75,7 +77,9 @@ def get_summary_statistics():
                   JOIN Class.DimStudent s ON g.StudentNo = s.StudentNo
                   JOIN Class.DimCourse c ON g.CourseKey = c.CourseKey
 
-                  WHERE LOWER(Name) LIKE '{query_name}'
+                  WHERE (LOWER(FirstName) LIKE '{query_name}' 
+                        OR LOWER(Surname) LIKE '{query_name}'
+                        OR LOWER(Name) LIKE '{query_name}')
                     AND LOWER(CourseName) LIKE '{query_course}';"""
 
     conn = get_database_connection()
