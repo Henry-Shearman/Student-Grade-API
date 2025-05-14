@@ -21,7 +21,7 @@ def get_database_connection():
 
 #API call to return grade data with options to filter by name or course. NB: will not work with any null entries.
 @app.get('/grades_search')
-def get_all_grades_test():
+def get_student_grade_data():
     
     query_name = request.args.get('name', default='%')
     query_name = f'{query_name}%'.lower() if query_name != '%' else '%'
@@ -126,9 +126,9 @@ def curve_grades_with_flat_scale():
     return jsonify({"message":"grades updated successfully", "number_of_updated_grades":len(grade_list)})
 
 
-#Upserts user data from json in request body
+#Upserts student grade data from json in request body
 @app.post('/insert_student_data')
-def upsert_users():
+def upsert_student_grade_data():
  
     data = request.get_json(silent=True)
 
