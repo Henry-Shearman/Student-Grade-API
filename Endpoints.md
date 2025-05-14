@@ -5,8 +5,8 @@
 
 |Parameter|Type  |Required|Description                    |
 |:--------|:-----|:-------|:------------------------------|
-|Name     |String|No      |Filters results by student name|
-|Course   |String|No      |Filters results by course name |
+|name     |String|No      |Filters results by student name|
+|course   |String|No      |Filters results by course name |
 
 ### Example Call
 ```sh
@@ -34,8 +34,8 @@ curl -X GET "http://${SERVER_NAME}:${PORT}/grades_search?name=Susan&course=math"
 
 |Parameter|Type  |Required|Description                    |
 |:--------|:-----|:-------|:------------------------------|
-|Name     |String|No      |Filters results by student name|
-|Course   |String|No      |Filters results by course name |
+|name     |String|No      |Filters results by student name|
+|course   |String|No      |Filters results by course name |
 
 ### Example Call
 ```sh
