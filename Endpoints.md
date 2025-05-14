@@ -10,7 +10,7 @@
 
 ### Example Call
 ```sh
-curl -X GET "http://${SERVER_NAME}:${PORT}/grades_search?name=Susan&course=math"
+curl -X GET "http://${SERVER_HOSTNAME}:${PORT}/grades_search?name=Susan&course=math"
 ```
 #### Output
 ```
@@ -39,7 +39,7 @@ curl -X GET "http://${SERVER_NAME}:${PORT}/grades_search?name=Susan&course=math"
 
 ### Example Call
 ```sh
-curl -X GET "http://${SERVER_NAME}:${PORT}/summary_stats?course=Mathematics"
+curl -X GET "http://${SERVER_HOSTNAME}:${PORT}/summary_stats?course=Mathematics"
 ```
 #### Output
 ```
@@ -66,7 +66,7 @@ None
 None
 ### Example Call
 ```sh
-curl -X PUT "http://${SERVER_NAME}:${PORT}/flat_scale_curve"
+curl -X PUT "http://${SERVER_HOSTNAME}:${PORT}/flat_scale_curve"
 ```
 #### Output
 ```
@@ -130,7 +130,7 @@ None
 ```
 ### Example Call
 ```sh
-curl -X POST "http://${SERVER_NAME}:${PORT}/insert_student_data" -H "Content-Type: application/json" -d '{"new_student_grades":[{"student_number":20000, "student_name":"Henry Shearman", "student_gender":"male", "student_course":"Music", "student_grade":20}, {"student_number":20000, "student_name":"Henry Shearman", "student_gender":"male", "student_course":"Computer Science", "student_grade":88}]}'
+curl -X POST "http://${SERVER_HOSTNAME}:${PORT}/insert_student_data" -H "Content-Type: application/json" -d '{"new_student_grades":[{"student_number":20000, "student_name":"Henry Shearman", "student_gender":"male", "student_course":"Music", "student_grade":20}, {"student_number":20000, "student_name":"Henry Shearman", "student_gender":"male", "student_course":"Computer Science", "student_grade":88}]}'
 ```
 #### Output
 ```
