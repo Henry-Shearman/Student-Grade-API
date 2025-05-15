@@ -107,18 +107,34 @@ def get_summary_statistics():
 
 
 #Curves grades using a flat scale curve.
-@app.put('/flat_scale_curve')
-def curve_grades_with_flat_scale():
+@app.put('/flat_scale_curve/<course>')
+def curve_grades_with_flat_scale(course):
 
-    query = "SELECT Grade FROM Class.FactGrades;"
+    query = f"""SELECT GradeKey
+                      ,Grade
+                    
+                    FROM Class.FactGrades g
+                    JOIN Class.DimCourse c ON g.CourseKey = c.CourseKey
+
+                    WHERE LOWER(CourseName) = '{course.lower()}';"""
 
     conn = get_database_connection()
     cursor = conn.cursor()
     cursor.execute(query)
-    grade_list = cursor.fetchall()
+    grade_keys, grade_list = list(zip(*cursor.fetchall()))
+    
+    #Find grade adjustments
     max_grade = np.max(grade_list)
     grade_adjust_value = 100 - max_grade
-    update_string = f"UPDATE Class.FactGrades SET Grade = Grade + {grade_adjust_value};"
+    
+    #Format grade keys for SQL WHERE statement
+    grade_key_sql_string = ",".join(list(map(lambda x: f"\'{x}\'", grade_keys)))
+
+    #Commit grade scaling to data warehouse
+    update_string = f"""UPDATE Class.FactGrades SET Grade = Grade + {grade_adjust_value}
+                            
+                            WHERE GradeKey IN ({grade_key_sql_string});"""
+
     cursor.execute(update_string)
     conn.commit()
     conn.close()

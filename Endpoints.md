@@ -58,21 +58,25 @@ curl -X GET "http://${SERVER_HOSTNAME}:${PORT}/summary_stats?course=Mathematics"
 
 
 
-## PUT /flat\_scale\_curve
+## PUT /flat\_scale\_curve/{course}
 ### Description: scales grades using a flat scale curve.
 ### Parameters
-None
+
+|Parameter|Type  |Required|Description                          |
+|:--------|:-----|:-------|:------------------------------------|
+|course   |String|Yes     |Scales grades within specified course|
+
 ### Request Body
 None
 ### Example Call
 ```sh
-curl -X PUT "http://${SERVER_HOSTNAME}:${PORT}/flat_scale_curve"
+curl -X PUT "http://${SERVER_HOSTNAME}:${PORT}/flat_scale_curve/Mathematics"
 ```
 #### Output
 ```
 {
   "message": "grades updated successfully",
-  "number_of_updated_grades": 91
+  "number_of_updated_grades": 13
 }
 ```
 
