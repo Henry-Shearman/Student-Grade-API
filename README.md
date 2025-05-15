@@ -33,3 +33,47 @@ deactivate
 ```
 
 The project dependencies are now installed into the virtual environment and the project is ready to use.
+
+## Usage Instructions
+
+### Step 1: Activate the Virtual Environment
+Use the command below to activate the virtual environment:
+```sh
+source Student_Grade_API_venv/bin/activate
+```
+
+### Step 2: Initialise Database Environment Variables
+Insert the necessary details into the code below to initialise the database environment variables
+```sh
+export DB_NAME=studentgradesdb;
+export DB_USERNAME=$USER;
+export DB_PASSWORD="Insert user password";
+export DB_HOSTNAME="Insert database hostname"
+```
+
+### Step 3: Create and Populate Data Warehouse with Dummy Data
+Run the create_and_populate_DW.sh script using the commands below:
+```sh
+sudo chmod 700 create_and_populate_DW.sh;
+./create_and_populate_DW.sh
+```
+
+Then enter the desired number of students into the displayed prompt. An example for 10 students is shown below:
+```
+Enter number of dummy students: 10
+```
+
+You will then be prompted for the root password. If entered successfully, the following should appear in the last line of the output for the 10 student example shown above:
+```
+COPY 70
+```
+
+This indicates that 70 grades have been successfully ingested into the data warehouse.
+
+### Step 4: Run the API on the Flask Testing Server
+Finally, start the test server locally using the following command:
+```
+python3 API.py
+```
+
+The server will now be running on localhost using the default port of 5000. Use the endpoints detailed in the Endpoints.md file to call the API.
