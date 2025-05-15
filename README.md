@@ -52,8 +52,9 @@ export DB_HOSTNAME="Insert database hostname"
 ```
 
 ### Step 3: Create and Populate Data Warehouse with Dummy Data
-Run the create_and_populate_DW.sh script using the commands below:
+Navigate to the Student-Grade-API directory and run the create_and_populate_DW.sh script using the commands below:
 ```sh
+cd Student-Grade-API;
 sudo chmod 700 create_and_populate_DW.sh;
 ./create_and_populate_DW.sh
 ```
